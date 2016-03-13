@@ -1,10 +1,25 @@
-var Keyboard = (function(map,container){
+var Keyboard = (function(map,container,options){
   if(typeof map == "undefined") throw ": keyboard map is undefined";
   if(typeof container == "undefined") throw ": keyboard container is undefined";
-  
+
+  var keyFunctionsCaptions = {
+    'space': 'Espaço',
+    'backsp': 'Apagar',
+    'capslock': 'Aa'
+  }
+
   var keys = [];
   for(var i = 0; i < map.length; i++){
      keys.push(map[i].split(" "));
+  }
+
+  // Merge key functions captions
+  if (typeof options != "undefined" && options['keyFunctionsCaptions'] != "undefined") {
+    for (var optionKey in keyFunctionsCaptions) {
+      if (options['keyFunctionsCaptions'].hasOwnProperty(optionKey)) {
+        keyFunctionsCaptions[optionKey] = options['keyFunctionsCaptions'][optionKey];
+      }
+    }
   }
 
   //Helpers
@@ -12,14 +27,14 @@ var Keyboard = (function(map,container){
     var elements = this.getElementsByClassName(className);
     if(elements.length > 0)
       for(var i = 0; i < elements.length; i++)
-        callback(elements[i]);      
+        callback(elements[i]);
   }
 
   Document.prototype.getElement = function(tagName,callback){
     var elements = this.getElementsByTagName(tagName);
     if(elements.length > 0)
       for(var i = 0; i < elements.length; i++)
-        callback(elements[i]);    
+        callback(elements[i]);
   }
 
   //Events
@@ -37,7 +52,7 @@ var Keyboard = (function(map,container){
       });
     })
   })();
-  
+
   var textareaFocus = (function(){
     document.getElement('textarea',function(textarea){
       textarea.addEventListener('focus',function(e){
@@ -52,28 +67,28 @@ var Keyboard = (function(map,container){
       });
     })
   })();
-  
+
   var addCharacter = function(char){
     document.getClass('focus',function(activeElement){
         activeElement.value += char;
-    });        
+    });
   }
-  
+
   //Create Keyboard Buttons
   var keyFunctions = {
     'space' : {
       click : function(){
         addCharacter(' ');
       },
-      innerHTML : 'Espaço'
+      innerHTML : keyFunctionsCaptions['space']
     },
     'backsp' : {
       click : function(){
         document.getClass('focus',function(activeElement){
           activeElement.value = activeElement.value.substr(0,activeElement.value.length-1);
-        });  
+        });
       },
-      innerHTML : 'Apagar'      
+      innerHTML : keyFunctionsCaptions['backsp']
     },
     'capslock' : {
       activated : false,
@@ -82,19 +97,19 @@ var Keyboard = (function(map,container){
         if(keyFunctions.capslock.activated){
           for(var i = 0; i < inputs.length; i++)
             if(!inputs[i].classList.contains('key-func'))
-              inputs[i].innerHTML = inputs[i].innerHTML.toUpperCase();
+              inputs[i].innerHTML = inputs[i].innerHTML.toLowerCase();
           keyFunctions.capslock.activated = false;
         }else if (!keyFunctions.capslock.activated){
           for(var i = 0; i < inputs.length; i++)
-            if(!inputs[i].classList.contains('key-func'))            
-              inputs[i].innerHTML = inputs[i].innerHTML.toLowerCase();
+            if(!inputs[i].classList.contains('key-func'))
+              inputs[i].innerHTML = inputs[i].innerHTML.toUpperCase();
           keyFunctions.capslock.activated = true;
         }
       },
-      innerHTML : 'Aa'
+      innerHTML : keyFunctionsCaptions['capslock']
     }
   }
-  
+
   var createCharacterButton = function(char){
     var button = document.createElement('button');
     button.setAttribute('class','key-button');
@@ -102,7 +117,7 @@ var Keyboard = (function(map,container){
     button.addEventListener('click',function(){addCharacter(this.innerHTML)});
     return button;
   }
-  
+
   var createFunctionButton = function(func){
     var button = document.createElement('button');
     button.setAttribute('class','key-button');
@@ -111,8 +126,8 @@ var Keyboard = (function(map,container){
     button.innerHTML = keyFunctions[func].innerHTML;
     button.addEventListener('click', keyFunctions[func].click);
     return button;
-  } 
-  
+  }
+
   var createKeyboard = (function(){
     var keyboard = document.createDocumentFragment();
     for(var i = 0; i < keys.length; i++){
