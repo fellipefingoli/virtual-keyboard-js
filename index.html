@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>virtual-keyboard-js usage example</title>
+  <script type="text/javascript" src="bin/main.js"></script>
+  <style>
+    .keyboard .key-line {
+      margin: 6px 6px 6px 0;
+      padding: 0;
+    }
+    .keyboard .key-input {
+      display: inline;
+      margin-right: 6px;
+      list-style-type: none;
+    }
+    #key-func-space {
+      width: 10em;
+    }
+  </style>
+</head>
+<body>
+  <p>Numeric keyboard example</p>
+  <div id="keyboard_num" class="keyboard"></div>
+  <input type="text" name="input1" />
+
+  <p>Basic QUERTY keyboard example</p>
+  <div id="keyboard_querty" class="keyboard"></div>
+  <input type="text" name="input1" />
+
+  <p>Select one of inputs and start typing virtual keyboard</p>
+  <script>
+    //Options
+    var options = {
+      //Captions for special keys
+      'keyFunctionsCaptions': {
+        'space': '&#160;',
+        'backsp': '&#8592;',
+        'capslock': '[Aa] CapsLock'
+      }
+    }
+
+    var numeric = [
+      "7 8 9",
+      "4 5 6",
+      "1 2 3",
+      "0 ."
+    ];
+
+    var querty = [
+      '1 2 3 4 5 6 7 8 9 0 - = {backsp}',
+      'q w e r t y u i o p [ ] \\',
+      '{capslock} a s d f g h j k l ;',
+      'z x c v b n m , . /',
+      '{space}'
+    ]
+
+    new Keyboard(numeric, document.querySelector("#keyboard_num"));
+    new Keyboard(querty, document.querySelector("#keyboard_querty"), options);
+  </script>
+</body>
+</html>
